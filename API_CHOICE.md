@@ -1,6 +1,6 @@
 # API Choice
 
-- Étudiant : VOTRE NOM
+- Étudiant : KEMENI DANIEL
 - API choisie : Frankfurter (taux de change)
 - URL base : https://api.frankfurter.app
 - Documentation officielle : https://frankfurter.dev
