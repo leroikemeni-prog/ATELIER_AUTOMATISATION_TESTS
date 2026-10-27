@@ -1,1 +1,65 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <title>Dashboard QoS - Frankfurter</title>
+  <style>
+    body { font-family: sans-serif; max-width: 960px; margin: 2rem auto; padding: 0 1rem; }
+    table { border-collapse: collapse; width: 100%; margin: 1rem 0; }
+    th, td { border: 1px solid #ccc; padding: 6px 10px; text-align: left; }
+    .PASS { color: green; font-weight: bold; }
+    .FAIL { color: red; font-weight: bold; }
+    .kpi span { display: inline-block; margin-right: 1.5rem; }
+  </style>
+</head>
+<body>
+  <h1>Dashboard QoS - Frankfurter API</h1>
+  <p><a href="/run">Lancer un run</a> | <a href="/export">Export JSON</a> | <a href="/health">Health</a></p>
 
+  {% if last %}
+  <h2>Dernier run ({{ last.timestamp }})</h2>
+  <p class="kpi">
+    <span>Réussis : <b>{{ last.passed }}</b></span>
+    <span>Échoués : <b>{{ last.failed }}</b></span>
+    <span>Taux d'erreur : <b>{{ (last.error_rate * 100)|round(1) }} %</b></span>
+    <span>Disponibilité : <b>{{ (last.availability * 100)|round(1) }} %</b></span>
+    <span>Latence moy. : <b>{{ last.latency_avg }} ms</b></span>
+    <span>p95 : <b>{{ last.latency_p95 }} ms</b></span>
+  </p>
+  <p>
+    {% if last.failed == 0 and last.latency_p95 < 1000 %}Service sain : tous les tests passent et la latence est correcte.
+    {% elif last.failed == 0 %}Service fonctionnel mais lent (p95 élevé).
+    {% else %}Service dégradé : {{ last.failed }} test(s) en échec, voir le détail ci-dessous.{% endif %}
+  </p>
+  <table>
+    <tr><th>Test</th><th>Statut</th><th>Latence</th><th>Détails</th></tr>
+    {% for t in last.details %}
+    <tr>
+      <td>{{ t.name }}</td>
+      <td class="{{ t.status }}">{{ t.status }}</td>
+      <td>{{ t.latency_ms }} ms</td>
+      <td>{{ t.details }}</td>
+    </tr>
+    {% endfor %}
+  </table>
+  {% else %}
+  <p>Aucun run pour l'instant. <a href="/run">Lancer le premier</a>.</p>
+  {% endif %}
+
+  <h2>Historique</h2>
+  <table>
+    <tr><th>Date</th><th>OK</th><th>KO</th><th>Erreurs</th><th>Dispo</th><th>Moy.</th><th>p95</th></tr>
+    {% for r in runs %}
+    <tr>
+      <td>{{ r.timestamp }}</td>
+      <td>{{ r.passed }}</td>
+      <td>{{ r.failed }}</td>
+      <td>{{ (r.error_rate * 100)|round(1) }} %</td>
+      <td>{{ (r.availability * 100)|round(1) }} %</td>
+      <td>{{ r.latency_avg }} ms</td>
+      <td>{{ r.latency_p95 }} ms</td>
+    </tr>
+    {% endfor %}
+  </table>
+</body>
+</html>
