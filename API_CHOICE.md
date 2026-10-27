@@ -1,13 +1,16 @@
 # API Choice
 
-- Étudiant :
-- API choisie :
-- URL base :
-- Documentation officielle / README :
-- Auth : None / API Key / OAuth
+- Étudiant : VOTRE NOM
+- API choisie : Frankfurter (taux de change)
+- URL base : https://api.frankfurter.app
+- Documentation officielle : https://frankfurter.dev
+- Auth : None
 - Endpoints testés :
-  - GET ...
-  - GET ...
-- Hypothèses de contrat (champs attendus, types, codes) :
-- Limites / rate limiting connu :
-- Risques (instabilité, downtime, CORS, etc.) :
+  - GET /latest?from=EUR
+  - GET /latest?from=EUR&to=USD
+  - GET /latest?from=XXX (cas d'erreur attendu)
+- Hypothèses de contrat :
+  - 200 + JSON avec les champs base (string), date (string), rates (objet de nombres)
+  - Devise inconnue : code 4xx (404 ou 422)
+- Limites / rate limiting connu : pas de clé, usage raisonnable demandé
+- Risques : indisponibilité ponctuelle, latence variable
